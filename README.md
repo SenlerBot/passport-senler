@@ -14,7 +14,7 @@
 Сначала установите необходимые пакеты:
 
 ```bash
-npm install passport-senler
+npm install git+https://github.com/SenlerBot/passport-senler.git
 ```
 
 ## Использование
