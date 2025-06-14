@@ -27,7 +27,7 @@ npm install git+https://github.com/SenlerBot/passport-senler.git
 ```typescript
 import express from 'express';
 import passport from 'passport';
-import { SenlerStrategy, SenlerStrategyOptions, SenlerUser } from 'passport-senler';
+import { SenlerStrategy, SenlerStrategyOptions, SenlerChannel } from 'passport-senler';
 
 const app = express();
 
@@ -53,7 +53,7 @@ app.get(
   }),
   (req, res) => {
     // Типизированный доступ к данным пользователя
-    const user = req.user as SenlerUser;
+    const user = req.user as SenlerChannel;
     res.json({
       message: 'Авторизация успешна',
       accessToken: user.accessToken,
@@ -143,9 +143,9 @@ interface SenlerStrategyOptions extends StrategyOptions {
 }
 ```
 
-### `SenlerUser`
+### `SenlerChannel`
 ```typescript
-interface SenlerUser {
+interface SenlerChannel {
   accessToken: string;     // Токен доступа после успешной авторизации
   groupId?: string;        // ID группы Senler (если доступен)
 }
@@ -166,7 +166,7 @@ interface SenlerAccessTokenResponse {
 import { 
   SenlerStrategy, 
   SenlerStrategyOptions, 
-  SenlerUser, 
+  SenlerChannel, 
   SenlerAccessTokenResponse 
 } from 'passport-senler';
 ```
