@@ -3,6 +3,7 @@ import { Request } from 'express';
 import { Strategy as OAuth2Strategy, StrategyOptions, VerifyFunction } from 'passport-oauth2';
 
 export interface SenlerStrategyOptions extends StrategyOptions {
+  clientID: string;
   groupID?: string;
   clientSecret: string;
   callbackURL: string;
@@ -17,13 +18,14 @@ export interface SenlerAccessTokenResponse {
 
 export interface SenlerChannel {
   accessToken: string;
-  groupId?: string;
+  groupId?: string | undefined;
 }
 
 const authorizationURL = 'https://senler.ru/cabinet/OAuth2authorize';
 const tokenURL = 'https://senler.ru/ajax/cabinet/OAuth2token';
 
 export class SenlerStrategy extends OAuth2Strategy {
+  public name: string = 'senler';
   private _clientSecret: string;
   private _tokenURL: string;
   private _clientID: string;
@@ -34,8 +36,6 @@ export class SenlerStrategy extends OAuth2Strategy {
     options.groupID = options.groupID || '';
 
     super({ ...options, authorizationURL, tokenURL }, verify || ((): void => {}));
-
-    this.name = 'senler';
 
     this._clientSecret = options.clientSecret;
     this._callbackURL = options.callbackURL;
