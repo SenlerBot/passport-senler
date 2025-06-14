@@ -57,6 +57,7 @@ app.get(
     res.json({
       message: 'Авторизация успешна',
       accessToken: user.accessToken,
+      groupId: user.groupId, // ID группы передается в колбэк
     });
   }
 );
@@ -95,8 +96,11 @@ app.get(
     session: false, // Отключите сессии, так как библиотека passport-senler не работает с сессиями
   }),
   (req, res) => {
-    // Если аутентификация успешна, токен доступен через req.user.accessToken
-    res.json(req.user);
+    // Если аутентификация успешна, токен и groupId доступны через req.user
+    res.json({
+      accessToken: req.user.accessToken,
+      groupId: req.user.groupId, // ID группы передается в колбэк
+    });
   }
 );
 
@@ -143,6 +147,7 @@ interface SenlerStrategyOptions extends StrategyOptions {
 ```typescript
 interface SenlerUser {
   accessToken: string;     // Токен доступа после успешной авторизации
+  groupId?: string;        // ID группы Senler (если доступен)
 }
 ```
 

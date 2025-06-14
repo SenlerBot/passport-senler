@@ -17,6 +17,7 @@ export interface SenlerAccessTokenResponse {
 
 export interface SenlerUser {
   accessToken: string;
+  groupId?: string;
 }
 
 const authorizationURL = 'https://senler.ru/cabinet/OAuth2authorize';
@@ -57,7 +58,10 @@ export class SenlerStrategy extends OAuth2Strategy {
 
     try {
       const accessToken = await this.getAccessToken(authorizationCode);
-      const user: SenlerUser = { accessToken };
+      const user: SenlerUser = { 
+        accessToken,
+        groupId: this._groupID || undefined
+      };
       this.success(user);
     } catch (error) {
       this.fail(`Failed to exchange authorization code: ${error}`);
