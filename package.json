@@ -30,7 +30,7 @@
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "source": "src/index.ts",
-  "types": "dist/src/index.d.ts",
+  "types": "dist/index.d.ts",
   "files": [
     "dist",
     "src",
@@ -44,6 +44,7 @@
   "scripts": {
     "start": "npm run build && node dist/index.js",
     "build": "microbundle",
+    "postbuild": "copy \"dist\\src\\index.d.ts\" \"dist\\index.d.ts\" 2>nul || cp dist/src/index.d.ts dist/index.d.ts 2>/dev/null || true",
     "lint": "eslint --fix",
     "watch": "microbundle watch",
     "test": "jest"
