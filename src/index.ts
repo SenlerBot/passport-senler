@@ -36,7 +36,7 @@ export class SenlerStrategy extends OAuth2Strategy {
 
   constructor(options: SenlerStrategyOptions, verify?: VerifyFunction) {
     options.groupID = options.groupID || '';
-    
+
     const finalAuthorizationURL = options.authorizationURL || authorizationURL;
     const finalTokenURL = options.tokenURL || tokenURL;
 
