@@ -136,10 +136,13 @@ passport-senler не предоставляет API для работы с Senle
 
 ### `SenlerStrategyOptions`
 ```typescript
-interface SenlerStrategyOptions extends StrategyOptions {
-  groupID?: string;        // ID группы Senler (опционально)
-  clientSecret: string;    // Секретный ключ приложения
-  callbackURL: string;     // URL для обратного вызова
+interface SenlerStrategyOptions {
+  clientID: string;            // ID клиента приложения
+  groupID?: string;            // ID группы Senler (опционально)
+  clientSecret: string;        // Секретный ключ приложения
+  callbackURL: string;         // URL для обратного вызова
+  authorizationURL?: string;   // Кастомный URL авторизации (опционально)
+  tokenURL?: string;           // Кастомный URL для получения токена (опционально)
 }
 ```
 
@@ -170,6 +173,48 @@ import {
   SenlerAccessTokenResponse 
 } from 'passport-senler';
 ```
+
+## Кастомные URL-ы
+
+По умолчанию библиотека использует стандартные URL-ы Senler:
+- **authorizationURL**: `https://senler.ru/cabinet/OAuth2authorize`
+- **tokenURL**: `https://senler.ru/ajax/cabinet/OAuth2token`
+
+Вы можете переопределить эти URL-ы для использования собственных серверов или тестовых окружений:
+
+### Пример с кастомными URL-ами:
+
+```typescript
+import { SenlerStrategy, SenlerStrategyOptions } from 'passport-senler';
+
+const customOptions: SenlerStrategyOptions = {
+  clientID: 'ВАШ_CLIENT_ID',
+  clientSecret: 'ВАШ_CLIENT_SECRET',
+  callbackURL: 'https://yourapp.com/auth/senler/callback',
+  
+  // Кастомные URL-ы
+  authorizationURL: 'https://custom.senler.ru/oauth/authorize',
+  tokenURL: 'https://custom.senler.ru/oauth/token'
+};
+
+passport.use(new SenlerStrategy(customOptions));
+```
+
+### Использование для разработки:
+
+```typescript
+const devOptions: SenlerStrategyOptions = {
+  clientID: 'dev-client-id',
+  clientSecret: 'dev-secret',
+  callbackURL: 'http://localhost:3000/auth/senler/callback',
+  
+  // URL-ы для тестового окружения
+  authorizationURL: 'http://localhost:8080/oauth/authorize',
+  tokenURL: 'http://localhost:8080/oauth/token'
+};
+```
+
+**Если параметры `authorizationURL` и `tokenURL` не указаны, будут использованы стандартные URL-ы Senler.**
 
 ## Конфигурация
 

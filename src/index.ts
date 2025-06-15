@@ -1,12 +1,14 @@
 import axios from 'axios';
 import { Request } from 'express';
-import { Strategy as OAuth2Strategy, StrategyOptions, VerifyFunction } from 'passport-oauth2';
+import { Strategy as OAuth2Strategy, VerifyFunction } from 'passport-oauth2';
 
-export interface SenlerStrategyOptions extends StrategyOptions {
+export interface SenlerStrategyOptions {
   clientID: string;
   groupID?: string;
   clientSecret: string;
   callbackURL: string;
+  authorizationURL?: string;
+  tokenURL?: string;
 }
 
 export interface SenlerAccessTokenResponse {
@@ -32,15 +34,24 @@ export class SenlerStrategy extends OAuth2Strategy {
   private _groupID: string;
   private _callbackURL: string;
 
-  constructor(options: Omit<SenlerStrategyOptions, 'authorizationURL' | 'tokenURL'>, verify?: VerifyFunction) {
+  constructor(options: SenlerStrategyOptions, verify?: VerifyFunction) {
     options.groupID = options.groupID || '';
+    
+    const finalAuthorizationURL = options.authorizationURL || authorizationURL;
+    const finalTokenURL = options.tokenURL || tokenURL;
 
-    super({ ...options, authorizationURL, tokenURL }, verify || ((): void => {}));
+    super({ 
+      clientID: options.clientID,
+      clientSecret: options.clientSecret,
+      callbackURL: options.callbackURL,
+      authorizationURL: finalAuthorizationURL, 
+      tokenURL: finalTokenURL 
+    }, verify || ((): void => {}));
 
     this._clientSecret = options.clientSecret;
     this._callbackURL = options.callbackURL;
     this._groupID = options.groupID || '';
-    this._tokenURL = tokenURL;
+    this._tokenURL = finalTokenURL;
     this._clientID = options.clientID;
   }
 
