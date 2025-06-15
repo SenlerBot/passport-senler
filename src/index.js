@@ -24,9 +24,11 @@ class SenlerStrategy extends passport_oauth2_1.Strategy {
         this._tokenURL = finalTokenURL;
         this._clientID = options.clientID;
     }
+    
     async authenticate(req, options) {
         const authorizationCode = req.query.code?.toString();
         const groupId = req.query.group_id?.toString();
+        
         if (!authorizationCode) {
             return super.authenticate(req, options);
         }

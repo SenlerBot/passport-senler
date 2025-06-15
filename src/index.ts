@@ -55,6 +55,36 @@ export class SenlerStrategy extends OAuth2Strategy {
     this._clientID = options.clientID;
   }
 
+  /**
+   * Переопределяем метод для добавления дополнительных параметров в URL авторизации
+   * @param options - опции переданные в passport.authenticate()
+   * @returns объект с дополнительными параметрами для URL авторизации
+   */
+  authorizationParams(options: any = {}): Record<string, string> {
+    const params: Record<string, string> = {};
+    
+    // Вызываем родительский метод для получения базовых параметров
+    try {
+      const parentParams = super.authorizationParams(options);
+      if (parentParams && typeof parentParams === 'object') {
+        Object.assign(params, parentParams);
+      }
+    } catch (error) {
+      // Если родительский метод не существует или выдает ошибку, продолжаем
+    }
+    
+    // Определяем приоритет для group_id:
+    // 1. Из опций authenticate() (самый высокий приоритет)
+    // 2. Из настроек стратегии (из конструктора)
+    const groupId = options.group_id || this._groupID;
+    
+    if (groupId) {
+      params.group_id = groupId;
+    }
+    
+    return params;
+  }
+
   async authenticate(req: Request, options?: object): Promise<void> {
     const authorizationCode = req.query.code?.toString();
     const groupId = req.query.group_id?.toString();
